@@ -1,0 +1,43 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  padding: 1em;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+header {
+  background: red;
+}
+
+header .nabvar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.content{
+display: grid;
+grid-template-columns: 70% 30%;
+}
+
+section {
+  background: yellow;
+}
+
+.films {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+aside {
+  background: blue;
+}
+
+footer {
+  background: green;
+}
