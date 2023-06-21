@@ -31,11 +31,24 @@ section {
 
 .films {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* grid-template-columns: repeat(3, 1fr); */
 }
 
 aside {
   background: blue;
+}
+aside {
+  display: flex;
+  flex-direction: column;
+  color: #fafafa;
+  /* align-items: center; */
+}
+
+ label{
+  margin: 0 0 6px;
+}
+label > input{
+  /* visibility: hidden; */
 }
 
 footer {

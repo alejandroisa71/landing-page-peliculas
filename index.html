@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,43 +9,75 @@
   <body>
     <main>
       <header>
-        
-          <ul class="nabvar">
-            <li><a href="#"></a>Inicio</li>
-            <li><a href="#"></a>Sobre Nosotros</li>
-            <li><a href="#"></a>Inicia Sesion</li>
-            <li><a href="#"></a> Cerrar Sesion</li>
-          </ul>
-          header
-
+        <ul class="nabvar">
+          <li><a href="#"></a>Inicio</li>
+          <li><a href="#"></a>Sobre Nosotros</li>
+          <li><a href="#"></a>Inicia Sesion</li>
+          <li><a href="#"></a> Cerrar Sesion</li>
+        </ul>
+        header
       </header>
-      
+
       <div class="content">
         <section>
-            <h1>Descubre las críticas a las películas de Estreno</h1>
-           <div >
-            <ul class="films">
-                <li>pelicula 1</li>
-                <li>pelicula 2</li>
-                <li>pelicula 3</li>
-                <li>pelicula 4</li>
-                <li>pelicula 5</li>
-                <li>pelicula 6</li>
-                <li>pelicula 7</li>
-                <li>pelicula 8</li>
-                <li>pelicula 9</li>
-                <li>pelicula 10</li>
-                <li>pelicula 11</li>
-                <li>pelicula 12</li>
-                <li>pelicula 13</li>
-                <li>pelicula 14</li>
-                <li>pelicula 15</li>
-            </ul>
-           </div>
-          </section>
-          <aside>
-            <h1>aside</h1>
-          </aside>
+          <h1>Descubre las críticas a las películas de Estreno</h1>
+          <ul class="films" name="films"></ul>
+          <p><code id='result'>  </code></p>
+        </section>
+        <aside>
+          <h1>Puntuación</h1>
+          <label for=""
+            >Puntuación
+            <input
+              type="number"
+              min="0"
+              max="10"
+              id="rate"
+              required
+              placeholder="0-10"
+              step="0.1"
+            />
+          </label>
+          <label for="">
+            Año de Estreno
+            <input
+              type="number"
+              min="2000"
+              max="2023"
+              id="fromDate"
+              placeholder="2000"
+            />
+          </label>
+          <label for="">
+            Año Final
+            <input
+              type="number"
+              min="2000"
+              max="2023"
+              id="toDate"
+              placeholder="2023"
+            />
+          </label>
+          <label for="">
+            Usuario
+            <!-- <input type="text" /> -->
+            <select name="select" id="select">
+                <option value="">Usuario</option>
+            </select>
+          </label>
+
+          <!-- <div class="checkbox">
+              <label for="">0 a 1<input type="checkbox"></label>
+              <label for="">1.1 a 2<input type="checkbox"></label>
+              <label for="">2.1 a 3<input type="checkbox"></label>
+              <label for="">3.1 a 4<input type="checkbox"></label>
+              <label for="">4.1 a 5<input type="checkbox"></label>
+              <label for="">5.1 a 6<input type="checkbox"></label>
+              <label for="">6.1 a 7<input type="checkbox"></label>
+              <label for="">7.1 a 8<input type="checkbox"></label>
+              <label for="">8.1 a 9<input type="checkbox"></label> -->
+          <!-- </div> -->
+        </aside>
       </div>
       <footer>footer</footer>
     </main>
