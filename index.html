@@ -22,7 +22,7 @@
         <section>
           <h1>Descubre las críticas a las películas de Estreno</h1>
           <ul class="films" name="films"></ul>
-          <p><code id='result'>  </code></p>
+          <p><code id="result"> </code></p>
         </section>
         <aside>
           <h1>Puntuación</h1>
@@ -60,10 +60,11 @@
           </label>
           <label for="">
             Usuario
-            <!-- <input type="text" /> -->
-            <select name="select" id="select">
-                <option value="">Usuario</option>
+            <select id="select">
+              <option>Seleccione Usuario</option>
             </select>
+            <br />
+            <button id="btnMostrar">Mostrar seleccionado</button>
           </label>
 
           <!-- <div class="checkbox">
@@ -79,6 +80,7 @@
           <!-- </div> -->
         </aside>
       </div>
+
       <footer>footer</footer>
     </main>
     <script type="module" src="./scripts/movies-filter.js"></script>

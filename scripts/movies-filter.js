@@ -6,38 +6,105 @@ const films = document.querySelector('ul[name="films"]');
 const resultCode = document.getElementById('result');
 const fromDate = document.getElementById('fromDate'); //validar cuando ingrese una año menor
 const toDate = document.getElementById('toDate'); //validar cuando ingrese una año menor
-const select = document.getElementById('select');
+const btnMostrar = document.getElementById('btnMostrar');
+
+//---------------------------------------------------------
+const $select = document.querySelector('#select');
+
+const agregar = () => {
+  users.forEach((user) => {
+    const option = document.createElement('option');
+    const valor = user.username;
+    option.value = user.id;
+    option.text = valor;
+    $select.appendChild(option);
+    // console.log(option.value);
+  });
+};
+agregar();
+
+const mostrar = () => {
+  const indice = $select.selectedIndex;
+  if (indice === -1) return; // Esto es cuando no hay elementos
+  const opcionSeleccionada = $select.options[indice];
+  // console.log(opcionSeleccionada.value);
+  return opcionSeleccionada.value;
+};
+
+// document.addEventListener('DOMContentLoaded', () => {
+// });
+// const userId=mostrar(users)
+// console.log(userId);
+
+// const userId= mostrar()
+// console.log(userId);
+
+//----------------------------------------------
+
+// console.log(option1);
 
 const FILMS_FUNCTION = {
-  pintarMovies: function (movies) {
+  pintarMovies: function (movies ,users) {
     while (films.firstChild) {
       films.removeChild(films.firstChild);
     }
+    
+    return users.filter((_, index)) => movies[index] = movies.userId///continuara
+
+    const filmCritic = class {
+      constructor(id, username, email, street, city, company,  title , rate) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.fullAddress = `${street} - ${city}`;
+        this.company = company;
+        this.title = title;
+        this.rate = rate
+      }
+    };
+
+
     movies.forEach((movie) => {
       let option = document.getElementsByTagName('li')[0];
       option = document.createElement('li');
       option.className = 'option';
       option.id = `${movie.id}`;
-      option.textContent = `${movie.title} - ${movie.rate}`;
+      option.textContent = `${movie.title} - ${movie.rate} - ${movie.userId}`;
       films.appendChild(option);
     });
   },
-  filterMovies: function (movies, rate, fromDate1, toDate1) {
+
+  // Hace los filtrados de peliculas
+  filterMovies: function (users, movies, userId, rate, fromDate, toDate) {
+    console.log(typeof userId);
+
     const moviesCloned = movies.map((movie) => {
       return {
         title: movie.title,
         rate: movie.rate,
         watched: movie.watched,
+        userId: movie.userId,
       };
     });
 
-    return moviesCloned
-      .filter((movie) => movie.rate >= Number(rate))
-      .filter(
-        (movie) =>
-          new Date(movie.watched).getFullYear() === Number(fromDate1) &&
-          new Date(movie.watched).getFullYear() <= Number(toDate1)
-      );
+    if (userId > 0) {
+      return moviesCloned
+        .filter((movie) => movie.rate >= Number(rate))
+        .filter(
+          (movie) =>
+            new Date(movie.watched).getFullYear() === Number(fromDate) &&
+            new Date(movie.watched).getFullYear() <= Number(toDate)
+        )
+        .filter((movie) => movie.userId == Number(userId));
+    } else {
+      return moviesCloned
+        .filter((movie) => movie.rate >= Number(rate))
+        .filter(
+          (movie) =>
+            new Date(movie.watched).getFullYear() === Number(fromDate) &&
+            new Date(movie.watched).getFullYear() <= Number(toDate)
+        );
+    }
   },
 };
 
@@ -46,217 +113,60 @@ const choosenFunction =
   FILMS_FUNCTION[defaultOption] ?? FILMS_FUNCTION.defaultOption;
 choosenFunction(movies);
 
-rate.addEventListener('change', (event) => {
+
+//Muestra todo lo filtrado
+function otraFuncion() {
   let option = 'filterMovies';
-  const rate = event.target.value;
-  const fromDate1 = fromDate.value;
-  const toDate1 = toDate.value;
+  const userId = mostrar();
 
-  let choosenFunction =
-    FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
-  choosenFunction(movies, rate, fromDate1, toDate1);
-  const filteredMovies = choosenFunction(movies, rate, fromDate1, toDate1);
-  option='pintarMovies'
-  choosenFunction =
-    FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
+  let choosenFunction = FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
+  choosenFunction(
+    users,
+    movies,
+    userId,
+    rate.value,
+    fromDate.value,
+    toDate.value
+  );
+  const filteredMovies = choosenFunction(
+    users,
+    movies,
+    userId,
+    rate.value,
+    fromDate.value,
+    toDate.value
+  );
+  option = 'pintarMovies';
+  choosenFunction = FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
   choosenFunction(filteredMovies);
-  
+}
+
+rate.addEventListener('change', () => {
+  otraFuncion();
 });
 
-fromDate.addEventListener('change', (event) => {
-  const option = 'filterMovies'; //event.target.value
-  const fromDate1 = event.target.value;
-  const toDate1 = event.target.value;
-
-  const choosenFunction =
-    FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
-  choosenFunction(movies, rate, fromDate1, toDate1);
-  const filteredMovies = choosenFunction(movies, rate, fromDate1, toDate1);
-  console.log(filteredMovies);
+fromDate.addEventListener('change', () => {
+  otraFuncion();
 });
 
-toDate.addEventListener('change', (event) => {
-  const option = 'filterMovies'; //event.target.value
-  const toDate = event.target.value;
-  const choosenFunction =
-    FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
-  choosenFunction(movies, rate, fromDate, toDate);
-
-  // const filteredMovies = choosenFunction(movies, rate, fromDate, toDate);
-  // console.log(filteredMovies);
+toDate.addEventListener('change', () => {
+  otraFuncion();
 });
 
-// llenar el select
-const allUsers = (users) =>
-  users.map((item, index) => {
-    let option = document.getElementsByTagName('option')[0];
-    option = document.createElement('option');
-    option.className = 'option';
-    option.id = `${index + 1}`;
-    option.value = `${item.id}`;
-    option.textContent = `${item.username}`;
-    select.appendChild(option);
+btnMostrar.addEventListener('click', () => {
+  mostrar;
+  otraFuncion();
+});
 
-    return item;
-  });
-allUsers(users);
-// console.log(pepe);
 
-// const pintarMovies = (movie) => {
-//   let option = document.getElementsByTagName('li')[0];
-//   option = document.createElement('li');
-//   option.className = 'option';
-//   option.id = `${movie.id}`;
-//   option.textContent = `${movie.title} - ${movie.rate}`;
-//   films.appendChild(option);
-// };
 
-// const allMovies = (movies) => {
-//   movies.map((movie) => {
-//     pintarMovies(movie);
-//   });
-// };
-// allMovies(movies);
+// const pepito = new filmCritic(1, 'ale', 'dsjfkl@gamil.com', 'san martin 999', 'tucuman', 'serra')
 
-// const rateEvent = (movies) =>
-//   rate.addEventListener('change', (event) => {
-//     const results = movies.filter((movie) => movie.rate >= Number(rate.value));
-//     results.forEach((result) => pintarMovies(result));
-//   });
-// rateEvent(movies);
 
-// const filtersMovies = (movies, rateEvent) => {};
+// console.log(pepito);
 
-// filtersMovies(movies, rateEvent);
-// return movies.filter((movie) => movie.rate >= Number(rate.value))
+// filmCritic.prototype.rate =null
+// pepito.rate= 7.5
+// console.log(pepito);
 
-//----------------------------------------------------------------------
-//  console.log(usersCritic)
-// usersCritic()
-
-// const userId = (usersCritic) => {
-// const x = () =>
-//   select.addEventListener('change', (event) => {
-//     const option = event.target.value;
-//     console.log(option)
-//     return users.filter((user) => user.id === Number(option));
-
-//   });
-// // };
-// // console.log(userId(usersCritic))
-// // const x =userId(usersCritic)
-// // console.log(usersCritic1)
-
-// //esto traera del input
-// let userId = 0;
-// const user = users[userId];
-// // const user =users
-
-// const { id, username, email, address, company: nameCompany } = user;
-// const { city, street } = address;
-// const { name: company } = nameCompany;
-
-// const rateEvent = rate.addEventListener('change', (event) => {
-//   const result = filtersMovies({
-//     users,
-//     movies,
-//     userId,
-//     fromDateEvent,
-//     toDateEvent,
-//     rateEvent,
-//     x,
-//   });
-
-//   while (films.firstChild) {
-//     films.removeChild(films.firstChild);
-//   }
-
-//   result.forEach((item, index) => {
-//     const li = document.createElement('li');
-//     li.className = `mostrar_div_${index + 1}`;
-//     li.id = `mostrar_div_${index + 1}`;
-//     li.textContent = `${item.title}1 - ${new Date(
-//       item.watched
-//     ).getFullYear()} ${item.rate}`;
-//     films.appendChild(li);
-//   });
-// });
-
-// //ver cauando se cambia caundo se escribe directamente un numero
-// const fromDateEvent = fromDate.addEventListener('change', (event) => {
-//   // const fromDate = event.target.value;
-//   // console.log(typeof fromDate);
-//   filtersMovies({
-//     users,
-//     movies,
-//     userId,
-//     fromDateEvent,
-//     toDateEvent,
-//     rateEvent,
-//     x,
-//   });
-// });
-
-// const toDateEvent = toDate.addEventListener('change', (event) => {
-//   filtersMovies({
-//     users,
-//     movies,
-//     userId,
-//     fromDateEvent,
-//     toDateEvent,
-//     rateEvent,
-//     x,
-//   });
-// });
-
-// function filtersMovies({
-//   users,
-//   movies,
-//   userId,
-//   fromDateEvent,
-//   toDateEvent,
-//   rateEvent,
-//   x,
-// }) {
-//   x();
-
-//   return movies
-//     .filter((movie) => movie.rate >= Number(rate.value))
-//     .filter(
-//       (movie) =>
-//         new Date(movie.watched).getFullYear() === Number(fromDate.value) &&
-//         new Date(movie.watched).getFullYear() <= Number(toDate.value)
-//     );
-//   // console.log(filterMovies1)
-//   // return filterMovies1;
-// }
-
-// const filmCritic = class {
-//   constructor(id, username, email, street, city, company) {
-//     this.id = id;
-//     this.username = username;
-//     this.email = email;
-//     this.fullAddress = `${street} - ${city}`;
-//     this.company = company;
-//     //this.movie= movie.title;-------aca iran arreglos de peliculas
-//     //this.rate=movie.rate;
-//   }
-// };
-
-// const critico = new filmCritic(id, username, email, street, city, company); //no pasar tantos parametros
-
-// // console.log(critico);
-
-// // console.log(movies);
-
-// // const anoFiltrado= movies.filter(movie=> new Date(movie.watched).getFullYear() <= ano)
-// // console.log(x)
-// // filtersMovies({
-// //   users,
-// //   movies,
-// //   userId,
-// //   fromDateEvent,
-// //   toDateEvent,
-// //   rateEvent,
-// //   x,
-// // })
+//no pasar tantos parametros
