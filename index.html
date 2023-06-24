@@ -3,11 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles/style.css" />
     <title>Ranking de peliculas</title>
   </head>
   <body>
-    <main>
+    <div class="content">
       <header>
         <ul class="nabvar">
           <li><a href="#"></a>Inicio</li>
@@ -15,74 +19,62 @@
           <li><a href="#"></a>Inicia Sesion</li>
           <li><a href="#"></a> Cerrar Sesion</li>
         </ul>
-        header
       </header>
-
-      <div class="content">
+      <main class="main-content">
         <section>
-          <h1>Descubre las críticas a las películas de Estreno</h1>
-          <ul class="films" name="films"></ul>
-          <p><code id="result"> </code></p>
+          <h2>Descubre las críticas de las películas más Populares</h2>
+          <ul class="list-movies" name="listMovies"></ul>
         </section>
         <aside>
           <h1>Puntuación</h1>
-          <label for=""
-            >Puntuación
-            <input
-              type="number"
-              min="0"
-              max="10"
-              id="rate"
-              required
-              placeholder="0-10"
-              step="0.1"
-            />
-          </label>
-          <label for="">
-            Año de Estreno
-            <input
-              type="number"
-              min="2000"
-              max="2023"
-              id="fromDate"
-              placeholder="2000"
-            />
-          </label>
-          <label for="">
-            Año Final
-            <input
-              type="number"
-              min="2000"
-              max="2023"
-              id="toDate"
-              placeholder="2023"
-            />
-          </label>
-          <label for="">
-            Usuario
-            <select id="select">
-              <option>Seleccione Usuario</option>
-            </select>
-            <br />
-            <button id="btnMostrar">Mostrar seleccionado</button>
-          </label>
-
-          <!-- <div class="checkbox">
-              <label for="">0 a 1<input type="checkbox"></label>
-              <label for="">1.1 a 2<input type="checkbox"></label>
-              <label for="">2.1 a 3<input type="checkbox"></label>
-              <label for="">3.1 a 4<input type="checkbox"></label>
-              <label for="">4.1 a 5<input type="checkbox"></label>
-              <label for="">5.1 a 6<input type="checkbox"></label>
-              <label for="">6.1 a 7<input type="checkbox"></label>
-              <label for="">7.1 a 8<input type="checkbox"></label>
-              <label for="">8.1 a 9<input type="checkbox"></label> -->
-          <!-- </div> -->
+          <div class="rate-aside">
+            <label for=""
+              >Puntuación
+              <input
+                type="number"
+                min="0"
+                max="10"
+                id="rate"
+                required
+                placeholder="0-10"
+                step="0.1"
+              />
+            </label>
+            <label for="">
+              Año de Estreno
+              <input
+                type="number"
+                min="2000"
+                max="2023"
+                id="fromDate"
+                placeholder="2000"
+              />
+            </label>
+            <label for="">
+              Año Final
+              <input
+                type="number"
+                min="2000"
+                max="2023"
+                id="toDate"
+                placeholder="2023"
+              />
+            </label>
+            <label for="">
+              Usuario
+              <select id="select">
+                <option>Todos</option>
+              </select>
+            </label>
+          </div>
+          <button id="btnMostrar">Buscar</button>
         </aside>
-      </div>
+      </main>
 
-      <footer>footer</footer>
-    </main>
+      <footer>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste, velit.</p>
+      </footer>
+    </div>
     <script type="module" src="./scripts/movies-filter.js"></script>
   </body>
 </html>
