@@ -5,8 +5,8 @@ const rate = document.getElementById('rate');
 const listMovies = document.querySelector('ul[name="listMovies"]');
 const fromDate = document.getElementById('fromDate');
 const toDate = document.getElementById('toDate');
-const btnMostrar = document.getElementById('btnMostrar');
-const $select = document.querySelector('#select');
+const btnShowAllMovies = document.getElementById('showAllMovies');
+const select = document.querySelector('#select');
 
 //---------------LLena Select con los Críticos------------
 
@@ -16,19 +16,22 @@ const fillSelectCritics = () => {
     const value = user.username;
     option.value = user.id;
     option.text = value;
-    $select.appendChild(option);
+    select.appendChild(option);
   });
 };
 fillSelectCritics();
 
-const mostrar = () => {
-  const index = $select.selectedIndex;
-  // if (index === -1) return; // Esto es cuando no hay elementos
-  const selectOption = $select.options[index];
+const selectUser = () => {
+  const index = select.selectedIndex;
+  const selectOption = select.options[index];
   return selectOption.value;
 };
 
 const FILMS_FUNCTION = {
+
+
+
+  //Valida si hay movies para mostrar
   showMovies: function (movies, users) {
     const listMoviesFilter = [];
 
@@ -36,25 +39,22 @@ const FILMS_FUNCTION = {
       listMovies.removeChild(listMovies.firstChild);
     }
 
-    if(movies.length === 0){
-        console.log('no hay lementos');
-        let option = document.getElementsByTagName('li')[0];
+    if (movies.length === 0) {
+      let option = document.getElementsByTagName('li')[0];
       option = document.createElement('li');
       option.class = 'errorSearch';
       // option.id = `${movie.id}`;
       listMovies.appendChild(option);
       const title = document.createElement('h3');
-      title.textContent = "No hay Resultados para la busqueda";
+      title.textContent = 'No hay Resultados para la busqueda';
       option.appendChild(title);
       const image = document.createElement('img');
-      image.src = "./img/errorBusqueda.jpg";
+      image.src = './img/errorBusqueda.jpg';
       image.width = 600;
-      image.height=400
+      image.height = 400;
       option.appendChild(image);
-
-        return
+      return;
     }
-
     const movieCritic = class {
       constructor(user, movie) {
         this.id = user.id;
@@ -79,8 +79,6 @@ const FILMS_FUNCTION = {
         }
       });
     });
-
-   
 
     listMoviesFilter.forEach((movie) => {
       let option = document.getElementsByTagName('li')[0];
@@ -151,26 +149,30 @@ const FILMS_FUNCTION = {
   },
 };
 
+//Muestra todos los movies al cargar pagina
 const defaultOption = 'showMovies';
 const choosenFunction =
   FILMS_FUNCTION[defaultOption] ?? FILMS_FUNCTION.defaultOption;
 choosenFunction(movies, users);
 
+
 //Muestra todo lo filtrado
-function otraFuncion() { 
+function validateValuesInputs() {
   let option = 'filterMovies';
-  const userId = mostrar();// cambiar nombre a funcion
+  const userId = selectUser(); // cambiar nombre a funcion
 
   let choosenFunction = FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
+
   choosenFunction(
-    users,
     movies,
+    users,
     userId,
     rate.value,
     fromDate.value,
     toDate.value
   );
 
+  // ---Guarda en una constante lo que devuelve la funcion filterMovies
   const filteredMovies = choosenFunction(
     users,
     movies,
@@ -185,15 +187,15 @@ function otraFuncion() {
 
   choosenFunction(filteredMovies, users);
 }
-///----------------
-rate.addEventListener('change',otraFuncion);
 
-fromDate.addEventListener('change', otraFuncion);
+///----------------Eventos-------
+rate.addEventListener('change', validateValuesInputs);
 
-toDate.addEventListener('change', 
-  otraFuncion);
+fromDate.addEventListener('change', validateValuesInputs);
 
-btnMostrar.addEventListener('click', () => {
-  mostrar;
-  otraFuncion();
+toDate.addEventListener('change', validateValuesInputs);
+
+select.addEventListener('click', () => {
+  validateValuesInputs();
 });
+
