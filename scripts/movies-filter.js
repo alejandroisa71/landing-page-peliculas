@@ -1,60 +1,54 @@
-import movies from '../data/movies.js';
-import users from '../data/users.js';
+import movies from "../data/movies.js";
+import users from "../data/users.js";
 
-const rate = document.getElementById('rate');
+const rate = document.getElementById("rate");
 const listMovies = document.querySelector('ul[name="listMovies"]');
-const fromDate = document.getElementById('fromDate');
-const toDate = document.getElementById('toDate');
-const btnShowAllMovies = document.getElementById('showAllMovies');
-const select = document.querySelector('#select');
-
-//---------------LLena Select con los Críticos------------
-
-const fillSelectCritics = () => {
-  users.forEach((user) => {
-    const option = document.createElement('option');
-    const value = user.username;
-    option.value = user.id;
-    option.text = value;
-    select.appendChild(option);
-  });
-};
-fillSelectCritics();
-
-const selectUser = () => {
-  const index = select.selectedIndex;
-  const selectOption = select.options[index];
-  return selectOption.value;
-};
+const fromDate = document.getElementById("fromDate");
+const toDate = document.getElementById("toDate");
+const btnShowAllMovies = document.querySelector("button");
+const select = document.querySelector("#select");
 
 const FILMS_FUNCTION = {
+  filterMovies: function ({ userId, users, movies, fromDate, toDate, rate }) {
+    //Combina los arreglos users y movies
+    const combinedMoviesUsers = (movies, users) => {
+      const usersMovies = [];
+      movies.forEach((movie) => {
+        const userMovie = users.filter((user) => user.id === movie.userId);
+        const filterUserMovie = { ...movie, userMovie };
+        usersMovies.push(filterUserMovie);
+      });
+      return usersMovies;
+    };
 
+    const resultcombinedMoviesUsers = combinedMoviesUsers(movies, users);
 
+    const movieFilter = (resultcombinedMoviesUsers) => {
+      const filterCombined = resultcombinedMoviesUsers;
 
-  //Valida si hay movies para mostrar
-  showMovies: function (movies, users) {
-    const listMoviesFilter = [];
+      const filterRateDate = filterCombined
+        .filter((movie) => movie.rate >= rate)
+        .filter((movie) => new Date(movie.watched).getFullYear() >= fromDate)
+        .filter((movie) => new Date(movie.watched).getFullYear() <= toDate);
 
-    while (listMovies.firstChild) {
-      listMovies.removeChild(listMovies.firstChild);
-    }
+      if (!userId) {
+        return filterRateDate;
+      } else {
+        const filterRateDateUser = filterRateDate.filter(
+          (movie) => movie.userId === userId
+        );
+        return filterRateDateUser;
+      }
+    };
 
-    if (movies.length === 0) {
-      let option = document.getElementsByTagName('li')[0];
-      option = document.createElement('li');
-      option.class = 'errorSearch';
-      // option.id = `${movie.id}`;
-      listMovies.appendChild(option);
-      const title = document.createElement('h3');
-      title.textContent = 'No hay Resultados para la busqueda';
-      option.appendChild(title);
-      const image = document.createElement('img');
-      image.src = './img/errorBusqueda.jpg';
-      image.width = 600;
-      image.height = 400;
-      option.appendChild(image);
-      return;
-    }
+    const resultFilter = movieFilter(resultcombinedMoviesUsers);
+    return resultFilter;
+  },
+
+  //Crea los objetos en base al array filtrado
+  createObjMovies: function (resultFilterMovies) {
+    const resultMovies = [];
+
     const movieCritic = class {
       constructor(user, movie) {
         this.id = user.id;
@@ -68,134 +62,184 @@ const FILMS_FUNCTION = {
       }
     };
 
-    movies.forEach((movie) => {
-      const { userId } = movie;
-      users.forEach((user) => {
-        const { id } = user;
-
-        if (id === userId) {
-          const objMovie = new movieCritic(user, movie);
-          listMoviesFilter.push(objMovie);
-        }
-      });
+    resultFilterMovies.forEach((movie) => {
+      const { userMovie } = movie;
+      const user = userMovie[0];
+      const objMovie = new movieCritic(user, movie);
+      resultMovies.push(objMovie);
     });
 
-    listMoviesFilter.forEach((movie) => {
-      let option = document.getElementsByTagName('li')[0];
-      option = document.createElement('li');
-      option.class = 'option';
+    return resultMovies;
+  },
+
+  //Muestra por pantalla los movies filtradas
+  showMovies: function (resultFilterMoviesCloned) {
+    while (listMovies.firstChild) {
+      listMovies.removeChild(listMovies.firstChild);
+    }
+
+    if (resultFilterMoviesCloned.length === 0) {
+      let option = document.getElementsByTagName("li")[0];
+      option = document.createElement("li");
+      option.class = "errorSearch";
+      listMovies.appendChild(option);
+      const title = document.createElement("h3");
+      title.textContent = "No hay Resultados para la busqueda";
+      option.appendChild(title);
+      const image = document.createElement("img");
+      image.src = "./img/errorBusqueda.jpg";
+      image.width = 600;
+      image.height = 400;
+      option.appendChild(image);
+      return;
+    }
+
+    resultFilterMoviesCloned.forEach((movie) => {
+      let option = document.getElementsByTagName("li")[0];
+      option = document.createElement("li");
+      option.class = "option";
       option.id = `${movie.id}`;
       listMovies.appendChild(option);
 
-      const title = document.createElement('h3');
+      const title = document.createElement("h3");
       title.textContent = `${movie.title}`;
       option.appendChild(title);
 
-      const image = document.createElement('img');
+      const image = document.createElement("img");
       image.src = `${movie.image}`;
       image.width = 200;
       option.appendChild(image);
 
-      let rate = document.createElement('rate');
+      let rate = document.createElement("rate");
       rate.textContent = `Puntuación: ${movie.rate}`;
-      rate.class = 'rate';
+      rate.class = "rate";
       option.appendChild(rate);
 
-      const username = document.createElement('h3');
+      const username = document.createElement("h3");
       username.textContent = `${movie.username}`;
       option.appendChild(username);
-      const email = document.createElement('p');
+      const email = document.createElement("p");
       email.textContent = `Email: ${movie.email}`;
       option.appendChild(email);
-      const fullAddress = document.createElement('p');
+      const fullAddress = document.createElement("p");
       fullAddress.textContent = `Dirección: ${movie.fullAddress}`;
       option.appendChild(fullAddress);
-      const company = document.createElement('p');
+      const company = document.createElement("p");
       company.textContent = `Compañia: ${movie.company}`;
       option.appendChild(company);
     });
   },
-
-  // Hace los filtrados de peliculas
-  filterMovies: function (_users, movies, userId, rate, fromDate, toDate) {
-    const moviesCloned = movies.map((movie) => {
-      return {
-        title: movie.title,
-        rate: movie.rate,
-        watched: movie.watched,
-        userId: movie.userId,
-        image: movie.image,
-      };
-    });
-
-    if (userId > 0) {
-      return moviesCloned
-        .filter((movie) => movie.rate >= Number(rate))
-        .filter(
-          (movie) =>
-            new Date(movie.watched).getFullYear() === Number(fromDate) &&
-            new Date(movie.watched).getFullYear() <= Number(toDate)
-        )
-        .filter((movie) => movie.userId == Number(userId));
-    } else {
-      return moviesCloned
-        .filter((movie) => movie.rate >= Number(rate))
-        .filter(
-          (movie) =>
-            new Date(movie.watched).getFullYear() === Number(fromDate) &&
-            new Date(movie.watched).getFullYear() <= Number(toDate)
-        );
+  //Cuando no se ingresan valores en los inputs mmuestra el error por pantalla
+  errorValidateInputs: function () {
+    while (listMovies.firstChild) {
+      listMovies.removeChild(listMovies.firstChild);
     }
+    let option = document.getElementsByTagName("li")[0];
+    option = document.createElement("li");
+    option.class = "errorSearch";
+    listMovies.appendChild(option);
+    const title = document.createElement("h3");
+    title.textContent =
+      "Los campos Puntuación, Año de Estreno y Año Final son Obligatorios!";
+    option.appendChild(title);
+    const image = document.createElement("img");
+    image.src = "./img/errorInputs.jpg";
+    image.width = 600;
+    image.height = 400;
+    option.appendChild(image);
+    return;
+  },
+  defaultOption: function () {
+    const inputsValues = {
+      rate: 0.1,
+      fromDate: 2020,
+      toDate: 2022,
+      users,
+      movies,
+      userId: 0,
+    };
+    return inputsValues;
   },
 };
 
-//Muestra todos los movies al cargar pagina
-const defaultOption = 'showMovies';
-const choosenFunction =
+//Llena los Select con usuarios
+const fillSelectCritics = () => {
+  users.forEach((user) => {
+    const option = document.createElement("option");
+    const value = user.username;
+    option.value = user.id;
+    option.text = value;
+    select.appendChild(option);
+  });
+};
+fillSelectCritics();
+
+//Parametros para eu muestre todas las peliculas al ingresar a la pagina
+const defaultOption = () => {
+  const inputsValues = {
+    rate: 0.1,
+    fromDate: 2020,
+    toDate: 2022,
+    users,
+    movies,
+    userId: 0,
+  };
+  return inputsValues;
+};
+
+FILMS_FUNCTION[defaultOption] ?? FILMS_FUNCTION.defaultOption;
+
+let option = "defaultOption";
+let choosenFunction = FILMS_FUNCTION[option];
+const inputsValuesdefault = choosenFunction();
+
+option = "filterMovies";
+choosenFunction = FILMS_FUNCTION[option];
+
+const resultFilterMovies = choosenFunction(inputsValuesdefault);
+option = "createObjMovies";
+choosenFunction = FILMS_FUNCTION[option];
+
+const resultFilterMoviesCloned = structuredClone(
+  choosenFunction(resultFilterMovies)
+);
+
+option = "showMovies";
+choosenFunction = FILMS_FUNCTION[option];
+choosenFunction(resultFilterMoviesCloned);
+
+btnShowAllMovies.addEventListener("click", () => {
+  const inputsValues = {
+    rate: Number(rate.value),
+    fromDate: Number(fromDate.value),
+    toDate: Number(toDate.value),
+    users,
+    movies,
+    userId: Number(select.value),
+  };
+
   FILMS_FUNCTION[defaultOption] ?? FILMS_FUNCTION.defaultOption;
-choosenFunction(movies, users);
 
+  if (!rate.value || !fromDate.value || !toDate.value) {
+    let option = "errorValidateInputs";
+    let choosenFunction = FILMS_FUNCTION[option];
+    choosenFunction();
+    return;
+  }
 
-//Muestra todo lo filtrado
-function validateValuesInputs() {
-  let option = 'filterMovies';
-  const userId = selectUser(); // cambiar nombre a funcion
+  let option = "filterMovies";
+  let choosenFunction = FILMS_FUNCTION[option];
 
-  let choosenFunction = FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
+  const resultFilterMovies = choosenFunction(inputsValues);
+  option = "createObjMovies";
+  choosenFunction = FILMS_FUNCTION[option];
 
-  choosenFunction(
-    movies,
-    users,
-    userId,
-    rate.value,
-    fromDate.value,
-    toDate.value
+  //Clona el array resultFilterMovies
+  const resultFilterMoviesCloned = structuredClone(
+    choosenFunction(resultFilterMovies)
   );
 
-  // ---Guarda en una constante lo que devuelve la funcion filterMovies
-  const filteredMovies = choosenFunction(
-    users,
-    movies,
-    userId,
-    rate.value,
-    fromDate.value,
-    toDate.value
-  );
-
-  option = 'showMovies';
-  choosenFunction = FILMS_FUNCTION[option] ?? FILMS_FUNCTION.defaultOption;
-
-  choosenFunction(filteredMovies, users);
-}
-
-///----------------Eventos-------
-rate.addEventListener('change', validateValuesInputs);
-
-fromDate.addEventListener('change', validateValuesInputs);
-
-toDate.addEventListener('change', validateValuesInputs);
-
-select.addEventListener('click', () => {
-  validateValuesInputs();
+  option = "showMovies";
+  choosenFunction = FILMS_FUNCTION[option];
+  choosenFunction(resultFilterMoviesCloned);
 });
-
